@@ -1,39 +1,38 @@
-package com.arivas.moviesappkotlin.ui.movies.interactor
-
+package com.arivas.moviesappkotlin.ui.movies.viewmodel
 
 import android.annotation.SuppressLint
+import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.util.Log
 import com.arivas.moviesappkotlin.BuildConfig
 import com.arivas.moviesappkotlin.common.dto.MoviesResponse
 import com.arivas.moviesappkotlin.common.network.RetrofitService
 import com.arivas.moviesappkotlin.common.network.services.MoviesServices
-import com.arivas.moviesappkotlin.ui.movies.presenter.MoviesPresenter
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
+class MoviesViewModel(private val service: RetrofitService): ViewModel() {
+    private var moviesList: MutableLiveData<MoviesResponse>? = null
 
-class MoviesInteractorImpl(private val presenter: MoviesPresenter, private val service: RetrofitService): MoviesInteractor {
+    fun fetchData(): MutableLiveData<MoviesResponse> {
+        if (moviesList == null) {
+            moviesList = MutableLiveData<MoviesResponse>()
+            loadMovies()
+        }
+        return moviesList as MutableLiveData<MoviesResponse>
+    }
 
     @SuppressLint("CheckResult")
-    override fun popularMovies() {
+    private fun loadMovies() {
         getCall()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())
             .subscribe({ response ->
-                successPopularMovies(response)
+                moviesList?.value = response
             },{ error ->
                 Log.e("Error,", error.message)
-                error()
             })
-    }
-
-    override fun successPopularMovies(movies: MoviesResponse) {
-        presenter.successPopularMovies(movies)
-    }
-
-    override fun error() {
-        presenter.error()
     }
 
     private fun getService(): MoviesServices {
