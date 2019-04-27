@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.arivas.moviesappkotlin.BuildConfig
 import com.arivas.moviesappkotlin.R
+import com.arivas.moviesappkotlin.common.Constants.Companion.MOVIE_ID
 import com.arivas.moviesappkotlin.common.dto.ResultsItem
 import com.arivas.moviesappkotlin.ui.detail.view.DetailMovieActivity
 import com.facebook.drawee.view.SimpleDraweeView
@@ -45,7 +46,7 @@ class PopularMoviesRecyclerView(private val results: List<ResultsItem>): Recycle
 
     private fun goToDetail(context: Context, results: ResultsItem) {
         val detailIntent = Intent(context, DetailMovieActivity::class.java)
-        detailIntent.putExtra("movieId", results.id)
+        detailIntent.putExtra(MOVIE_ID, results.id)
         context.startActivity(detailIntent)
     }
 }
