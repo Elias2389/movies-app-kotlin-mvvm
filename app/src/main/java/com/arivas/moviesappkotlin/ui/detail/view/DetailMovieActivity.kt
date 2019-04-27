@@ -8,17 +8,16 @@ import com.arivas.moviesappkotlin.BuildConfig
 import com.arivas.moviesappkotlin.R
 import com.arivas.moviesappkotlin.common.Constants.Companion.MOVIE_ID
 import com.arivas.moviesappkotlin.common.dto.DetailMovie
-import com.arivas.moviesappkotlin.common.network.RetrofitService
 import com.arivas.moviesappkotlin.ui.detail.viewmodel.DetailMovieViewModel
 import com.facebook.drawee.view.SimpleDraweeView
 import kotlinx.android.synthetic.main.activity_detail_movie.*
-import org.koin.android.ext.android.inject
+import org.koin.android.viewmodel.ext.android.viewModel
+
 
 class DetailMovieActivity : AppCompatActivity() {
     private var overview: TextView? = null
     private var imgDetail: SimpleDraweeView? = null
-    private var model: DetailMovieViewModel? = null
-    private val service: RetrofitService by inject()
+    private val model: DetailMovieViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,14 +26,12 @@ class DetailMovieActivity : AppCompatActivity() {
         overview = findViewById(R.id.overview)
         imgDetail = findViewById(R.id.image_detail)
 
-        model = DetailMovieViewModel(service)
-
         detailMovie()
     }
 
     private fun detailMovie() {
         val movieId = intent.getIntExtra(MOVIE_ID,0)
-        model?.fetchDetail(movieId)?.observe(this, Observer {
+        model.fetchDetail(movieId).observe(this, Observer {
             successDetailMovie(it!!)
         })
     }
