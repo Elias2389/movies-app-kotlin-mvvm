@@ -15,7 +15,7 @@ import io.reactivex.schedulers.Schedulers
 class MoviesViewModel(private val service: RetrofitService): ViewModel() {
     private var moviesList: MutableLiveData<MoviesResponse>? = null
 
-    fun fetchdata(): MutableLiveData<MoviesResponse> {
+    fun fetchData(): MutableLiveData<MoviesResponse> {
         if (moviesList == null) {
             moviesList = MutableLiveData<MoviesResponse>()
             loadMovies()
@@ -23,9 +23,8 @@ class MoviesViewModel(private val service: RetrofitService): ViewModel() {
         return moviesList as MutableLiveData<MoviesResponse>
     }
 
-
     @SuppressLint("CheckResult")
-    fun loadMovies() {
+    private fun loadMovies() {
         getCall()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.io())

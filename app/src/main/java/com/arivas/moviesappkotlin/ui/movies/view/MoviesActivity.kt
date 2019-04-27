@@ -11,15 +11,12 @@ import com.arivas.moviesappkotlin.R
 import com.arivas.moviesappkotlin.common.dto.MoviesResponse
 import com.arivas.moviesappkotlin.common.network.RetrofitService
 import com.arivas.moviesappkotlin.ui.movies.adapter.PopularMoviesRecyclerView
-import com.arivas.moviesappkotlin.ui.movies.presenter.MoviesPresenter
-import com.arivas.moviesappkotlin.ui.movies.presenter.MoviesPresenterImpl
 import com.arivas.moviesappkotlin.ui.movies.viewmodel.MoviesViewModel
 import io.supercharge.shimmerlayout.ShimmerLayout
 import org.koin.android.ext.android.inject
 
 
-class MoviesActivity : AppCompatActivity(), MoviesView {
-    private var presenter: MoviesPresenter? = null
+class MoviesActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var mAdapter: RecyclerView.Adapter<*>? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
@@ -39,20 +36,17 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
 
         model = MoviesViewModel(service)
 
-        model?.fetchdata()?.observe(this, Observer {
+        popularMovies()
+    }
+
+    private fun popularMovies() {
+        showShimmer()
+        model?.fetchData()?.observe(this, Observer {
             successPopularMovies(it!!)
         })
-
-        //createPresenter()
-        //popularMovies()
     }
 
-    override fun popularMovies() {
-        presenter?.popularMovies()
-        showShimmer()
-    }
-
-    override fun successPopularMovies(movies: MoviesResponse) {
+    private fun successPopularMovies(movies: MoviesResponse) {
         hideShimmer()
 
         layoutManager = LinearLayoutManager(this)
@@ -62,12 +56,8 @@ class MoviesActivity : AppCompatActivity(), MoviesView {
         recyclerView?.adapter = mAdapter
     }
 
-    override fun error() {
+    fun error() {
 
-    }
-
-    override fun createPresenter() {
-        presenter = MoviesPresenterImpl(this, service)
     }
 
     private fun showShimmer() {
